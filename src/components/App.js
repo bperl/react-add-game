@@ -28,7 +28,7 @@ import store from '../store/store';
 const App = (props) => <Game reset={props.resetGame} key={props.gameId} />;
 
 const mapStateToProps = (state) => ({
-  gameId: state.gameId
+  gameId: state.global.gameId
 });
 
 // This mapDispatchToProps is not needed because we're referencing the action directly  as the second argument to connect.
