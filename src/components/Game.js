@@ -84,6 +84,10 @@ class Game extends React.PureComponent {
 
   playNumbers = shuffle(this.playNumbers);
 
+  componentWillUnmount() {
+    clearInterval(this.intervalId)
+  }
+
   render() {
     const gameStatus = this.gameStatus;
     return (
