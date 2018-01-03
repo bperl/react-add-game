@@ -1,7 +1,10 @@
-import React from 'react';
+propsimport React from 'react';
 import shuffle from 'lodash.shuffle';
+import { connect } from 'redux'
+import { selectID }
 
 import PlayNumber from './PlayNumber';
+
 
 class Game extends React.PureComponent {
   // Without Stage 2 enabled, you need a constructor
@@ -17,38 +20,41 @@ class Game extends React.PureComponent {
   // playNumbers = [1, 2, 3, 4, 5];
 
   // after 10 seconds, game is over
-  state = {
-    selectedIds: [],
-    remainingSeconds: 10
-  };
+  // state = {
+  //   selectedIds: [],
+  //   remainingSeconds: 10
+  // };
 
   gameStatus = 'PLAYING';
 
-  selectId = (id) => {
-    this.setState((prevState) => {
-      // return { selectedIds: prevState.selectedIds.concat(id) };
-      return { selectedIds: [...prevState.selectedIds, id] };
-    });
-  };
+  // selectId = (id) => {
+  //   this.setState((prevState) => {
+  //     // return { selectedIds: prevState.selectedIds.concat(id) };
+  //     return { selectedIds: [...prevState.selectedIds, id] };
+  //   });
+  // };
 
   componentDidMount() {
     this.intervalId = setInterval(() => {
-      this.setState((prevState) => {
-        if (prevState.remainingSeconds === 0) {
-          clearInterval(this.intervalId);
-          return null;
-        }
-        return { remainingSeconds: prevState.remainingSeconds - 1 };
-      });
-    }, 1000);
+
+    })
+    // this.intervalId = setInterval(() => {
+    //   this.setState((prevState) => {
+    //     if (prevState.remainingSeconds === 0) {
+    //       clearInterval(this.intervalId);
+    //       return null;
+    //     }
+    //     return { remainingSeconds: prevState.remainingSeconds - 1 };
+    //   });
+    // }, 1000);
   }
 
   // Adds an extra calculation after render. Also, this is a side-effect i.e. not a pure function.
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps) {
     // do we need new game STATUS?
     if (
-      nextState.selectedIds !== this.state.selectedIds ||
-      nextState.remainingSeconds === 0
+      nextProps.selectedIds !== this.state.selectedIds ||
+      nextProps.remainingSeconds === 0
     ) {
       this.gameStatus = this.calcGameStatus(nextState);
     }
@@ -60,11 +66,11 @@ class Game extends React.PureComponent {
 
   // Don't use state for computed values.
   calcGameStatus = (nextState) => {
-    let selectedTotal = nextState.selectedIds.reduce((acc, curr) => {
+    let selectedTotal = nextprops.selectedIds.reduce((acc, curr) => {
       return acc + this.playNumbers[curr];
     }, 0);
     console.log('total is: ', selectedTotal);
-    if (nextState.remainingSeconds === 0 || selectedTotal > this.target) {
+    if (nextprops.remainingSeconds === 0 || selectedTotal > this.target) {
       return 'LOST';
     }
     if (selectedTotal < this.target) {
@@ -103,7 +109,7 @@ class Game extends React.PureComponent {
                 onClick={this.selectId}
                 isDisabled={
                   gameStatus !== 'PLAYING' ||
-                  this.state.selectedIds.indexOf(index) >= 0
+                  this.props.selectedIds.indexOf(index) >= 0
                 }
               />
             ))}
@@ -111,7 +117,7 @@ class Game extends React.PureComponent {
         </div>
         {gameStatus}
         <br />
-        {this.state.remainingSeconds}
+        {this.props.remainingSeconds}
         <br />
         {this.gameStatus !== 'PLAYING' && <button onClick={this.props.reset}>Reset</button>}
       </div>
@@ -128,4 +134,8 @@ const styles = {
   }
 };
 
-export default Game;
+const mapStateToProps = (state) => ({
+  ...state.game
+})
+
+export default connect(mapStateToProps), { selectId })(Game)

@@ -13,7 +13,16 @@ const global = (state = {}, action) => {
 };
 
 const game = (state = {}, action) => {
-  return state;
+  // return state;
+  switch (action.type) {
+    case 'SELECT_ID':
+      return {
+        ...state,
+        selectedIds: [...state.selectIds, action.id]
+      };
+    default:
+      return state
+  }
 };
 
 export default combineReducers({ global, game});
